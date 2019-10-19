@@ -8,18 +8,21 @@ class App {
     this.maxDistance = Math.pow(maxDistance, 2);
     this.width = 1024;
     this.height = 768;
+    this.mousePoint = { x: 0, y: 0 };
 
     let dataLength = numPoints;
 
 
     this.display = document.createElement('canvas');
+    this.display.addEventListener('mousemove', this.handleMousemove.bind(this));
+
     this.displayCtx = this.display.getContext('2d');
     document.body.appendChild(this.display);
 
     this.displayBuffer = document.createElement('canvas');
     this.displayBufferCtx = this.display.getContext('2d');
     this.displayBufferCtx.fillStyle = '#000';
-    this.displayBufferCtx.lineWidth='1';
+    this.displayBufferCtx.lineWidth='0.1';
 
     this.display.width = this.width;
     this.display.height = this.height;
@@ -52,36 +55,14 @@ class App {
     return clipped > 0 ? clipped : clipped + max;
   }
 
-  draw() {
-    // Render result, offscreen then transfer
-
-    // erase what is on the canvas currently
-    this.displayBufferCtx.clearRect(0, 0, this.width, this.height);
-
-    // Compute kdTree
-    const tree = new kdTree(this.points, this.distance, ['x', 'y']);
-
-    // For each point
-    this.points.forEach((point) => {
-
-      // Find all the nearest points within a given radius -> `O(n log n)`
-      const nearestSet = tree.nearest(point, this.numPoints, this.maxDistance);
-
-      nearestSet.forEach(sibling => {
-        this.displayBufferCtx.strokeStyle=`rgba(127, 127, 127, ${(1 - sibling[1] / this.maxDistance).toFixed(1)})`;
-        this.displayBufferCtx.beginPath();
-        this.displayBufferCtx.moveTo(point.x, point.y);
-        this.displayBufferCtx.lineTo(sibling[0].x, sibling[0].y);
-        this.displayBufferCtx.stroke();
-      });
-
-      this.displayBufferCtx.fillRect(point.x - 1, point.y - 1, 2, 2);
-    });
-
-    this.displayCtx.drawImage(this.displayBuffer, 0, 0);
+  handleMousemove(event) {
+    this.mousePoint = {
+      x: event.clientX,
+      y: event.clientY,
+    };
   }
 
-  render() {
+  update() {
     // Move points -> `O(n)`
     this.points = this.points.map(point => {
       return {
@@ -90,7 +71,41 @@ class App {
         speed: point.speed,
       };
     });
+  }
 
+  draw() {
+    // Render result, offscreen then transfer
+
+    // erase what is on the canvas currently
+    this.displayBufferCtx.clearRect(0, 0, this.width, this.height);
+
+    const localPoints = [ this.mousePoint, ...this.points ];
+
+    // Compute kdTree
+    const tree = new kdTree(localPoints, this.distance, ['x', 'y']);
+
+    // For each point
+    localPoints.forEach((point) => {
+
+      // Find all the nearest points within a given radius -> `O(n log n)`
+      const nearestSet = tree.nearest(point, this.numPoints + 1, this.maxDistance);
+
+      nearestSet.forEach(sibling => {
+        this.displayBufferCtx.strokeStyle=`rgba(255, 255, 255, ${(1 - sibling[1] / this.maxDistance).toFixed(1)})`;
+        this.displayBufferCtx.beginPath();
+        this.displayBufferCtx.moveTo(point.x, point.y);
+        this.displayBufferCtx.lineTo(sibling[0].x, sibling[0].y);
+        this.displayBufferCtx.stroke();
+      });
+
+      // this.displayBufferCtx.fillRect(point.x - 1, point.y - 1, 2, 2);
+    });
+
+    this.displayCtx.drawImage(this.displayBuffer, 0, 0);
+  }
+
+  render() {
+    this.update();
 
     // Then process deltas, and render result onscreen
     this.draw();
