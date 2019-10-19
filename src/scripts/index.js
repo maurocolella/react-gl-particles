@@ -15,6 +15,8 @@ document.body.appendChild(pixi.view);
 
 const container = new PIXI.Container();
 container.interactive = true;
+container.interactiveChildren = false;
+container.sortDirty = false;
 pixi.stage.addChild(container);
 
 const graphics = new PIXI.Graphics();
