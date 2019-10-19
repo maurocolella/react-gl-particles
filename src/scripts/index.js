@@ -45,7 +45,7 @@ class App {
     this.handleMousemove = this.handleMousemove.bind(this);
     this.handleResize = this.handleResize.bind(this);
 
-    container.on('mousemove', this.handleMousemove);
+    container.on('pointermove', this.handleMousemove);
 
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
