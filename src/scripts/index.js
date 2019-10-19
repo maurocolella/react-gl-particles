@@ -2,6 +2,11 @@ import { kdTree } from 'kd-tree-javascript';
 import '../styles/index.scss';
 
 class App {
+  /**
+   * Constructor.
+   * @param {*} numPoints
+   * @param {*} maxDistance - maximum distance at which to draw connecting lines.
+   */
   constructor(numPoints, maxDistance) {
     this.points = [];
     this.renderPoints = [];
@@ -25,7 +30,7 @@ class App {
     this.handleResize();
 
 
-    // Iterate.
+    // Populate point array.
     while(dataLength-- > 0) {
       this.points.push(
         {
@@ -40,15 +45,29 @@ class App {
     }
   }
 
-  distance(point1, point2) {
+  /**
+   * Distance calculation function for KD tree. Simplified: we compare to h pow 2 directly.
+   * @param {*} point1
+   * @param {*} point2
+   */
+  calculateDistance(point1, point2) {
     return Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2);
   }
 
-  clip(val, max) {
+  /**
+   * Clip a value to a 0-n interval.
+   * @param {*} val
+   * @param {*} max
+   */
+  clipValue(val, max) {
     const clipped = val % max;
     return clipped > 0 ? clipped : clipped + max;
   }
 
+  /**
+   *
+   * @param {*} event
+   */
   handleMousemove(event) {
     this.mousePoint = {
       x: event.clientX,
@@ -56,6 +75,10 @@ class App {
     };
   }
 
+  /**
+   *
+   * @param {*} event
+   */
   handleResize(event) {
     this.width = window.innerWidth; // / window.devicePixelRatio;
     this.height = window.innerHeight; // / window.devicePixelRatio;
@@ -67,12 +90,15 @@ class App {
     this.displayBuffer.height = this.height;
   }
 
+  /**
+   * Update all point offsets.
+   */
   update() {
     // Move points -> `O(n)`
     this.points = this.points.map(point => {
       return {
-        x: this.clip(point.x + point.speed.x, this.width),
-        y: this.clip(point.y + point.speed.y, this.height),
+        x: this.clipValue(point.x + point.speed.x, this.width),
+        y: this.clipValue(point.y + point.speed.y, this.height),
         speed: point.speed,
       };
     });
@@ -80,7 +106,7 @@ class App {
     const localPoints = [ this.mousePoint, ...this.points ];
 
     // Compute kdTree
-    const tree = new kdTree(localPoints, this.distance, ['x', 'y']);
+    const tree = new kdTree(localPoints, this.calculateDistance, ['x', 'y']);
 
     // Find all the nearest points within a given radius -> `O(n log n)`
     this.renderPoints = localPoints.map(point => {
@@ -94,6 +120,9 @@ class App {
     // All: `O(n * (1 + log n))`
   }
 
+  /**
+   * Render updated points.
+   */
   draw() {
     // Render result, offscreen then transfer
 
@@ -121,15 +150,18 @@ class App {
     this.displayCtx.drawImage(this.displayBuffer, 0, 0);
   }
 
-  render() {
+  /**
+   * Application main.
+   */
+  run() {
     // Process.
     this.update();
 
     // Render.
     this.draw();
-    window.requestAnimationFrame(this.render.bind(this));
+    window.requestAnimationFrame(this.run.bind(this));
   }
 }
 
 const app = new App(144, 100);
-app.render();
+app.run();
