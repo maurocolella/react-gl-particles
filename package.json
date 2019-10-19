@@ -1,7 +1,7 @@
 {
-  "name": "webpack-starter",
+  "name": "kd-tree-dist",
   "version": "1.0.0",
-  "description": "A light foundation for your next frontend project based on webpack.",
+  "description": "A kd-tree-based distance field.",
   "scripts": {
     "build": "NODE_ENV=production webpack --config webpack/webpack.config.prod.js  --colors",
     "start": "webpack-dev-server --open --config webpack/webpack.config.dev.js"
@@ -18,7 +18,7 @@
     "javascript",
     "webdev"
   ],
-  "author": "webkid.io",
+  "author": "Mauro Colella",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/wbkd/webpack-starter/issues"
@@ -47,8 +47,20 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.6.0",
+    "@pixi/app": "^5.1.5",
+    "@pixi/constants": "^5.1.0",
+    "@pixi/core": "^5.1.5",
+    "@pixi/display": "^5.1.3",
+    "@pixi/graphics": "^5.1.5",
+    "@pixi/interaction": "^5.1.5",
+    "@pixi/math": "^5.1.0",
+    "@pixi/runner": "^5.1.1",
+    "@pixi/settings": "^5.1.3",
+    "@pixi/ticker": "^5.1.3",
+    "@pixi/utils": "^5.1.3",
     "core-js": "^3.3.2",
     "kd-tree-javascript": "^1.0.3",
-    "two.js": "^0.7.0-beta.3"
+    "memoizee": "^0.4.14",
+    "save": "^2.4.0"
   }
 }

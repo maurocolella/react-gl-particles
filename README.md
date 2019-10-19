@@ -1,8 +1,7 @@
 # Distance field animation with KD-Trees
 
-[![Dependabot badge](https://flat.badgen.net/dependabot/wbkd/webpack-starter?icon=dependabot)](https://dependabot.com/)
-
 Forked from: "a lightweight foundation for your next webpack based frontend project."
+[https://github.com/wbkd/webpack-starter.git](https://github.com/wbkd/webpack-starter.git)
 
 Someone on the issue tracker of particles.js mentioned using KD-Trees. Someone mentioned
 using webgl. Both of these made a lot of sense. I took some time to propose a lean
