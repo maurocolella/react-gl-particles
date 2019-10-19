@@ -5,8 +5,8 @@ import '../styles/index.scss';
 
 // PIXI initialization.
 const pixi = new PIXI.Application({
-  width: 1024,
-  height: 768,
+  // width: 1024,
+  // height: 768,
   antialias: true,
   transparent: true,
   resizeTo: window,
@@ -119,7 +119,11 @@ class App {
 
     // Compute kdTree
     const tree = new kdTree(localPoints, this.calculateDistance, ['x', 'y']);
-    nearest = memoize(tree.nearest);
+    nearest = memoize(tree.nearest, {
+      normalizer: function (args) {
+          return [JSON.stringify(args[0]), args[1], args[2]];
+      }
+    });
 
     // Find all the nearest points within a given radius -> `O(n log n)`
     this.renderPoints = localPoints.map(point => {
