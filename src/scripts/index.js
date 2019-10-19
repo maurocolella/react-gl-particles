@@ -4,6 +4,7 @@ import '../styles/index.scss';
 class App {
   constructor(numPoints, maxDistance) {
     this.points = [];
+    this.renderPoints = [];
     this.numPoints = numPoints;
     this.maxDistance = Math.pow(maxDistance, 2);
     this.width = 1024;
@@ -21,14 +22,12 @@ class App {
 
     this.displayBuffer = document.createElement('canvas');
     this.displayBufferCtx = this.display.getContext('2d');
-    this.displayBufferCtx.fillStyle = '#000';
-    this.displayBufferCtx.lineWidth='0.1';
 
-    this.display.width = this.width;
-    this.display.height = this.height;
+    this.display.width = this.width; // * window.devicePixelRatio;
+    this.display.height = this.height; // * window.devicePixelRatio;
 
-    this.displayBuffer.width = this.width;
-    this.displayBuffer.height = this.height;
+    this.displayBuffer.width = this.width; // * window.devicePixelRatio;
+    this.displayBuffer.height = this.height; // * window.devicePixelRatio;
 
 
     // Iterate.
@@ -71,6 +70,22 @@ class App {
         speed: point.speed,
       };
     });
+
+    const localPoints = [ this.mousePoint, ...this.points ];
+
+    // Compute kdTree
+    const tree = new kdTree(localPoints, this.distance, ['x', 'y']);
+
+    // Find all the nearest points within a given radius -> `O(n log n)`
+    this.renderPoints = localPoints.map(point => {
+      return {
+        x: point.x,
+        y: point.y,
+        nearestSet: tree.nearest(point, this.numPoints + 1, this.maxDistance),
+      };
+    });
+
+    // All: `O(n * (1 + log n))`
   }
 
   draw() {
@@ -78,19 +93,11 @@ class App {
 
     // erase what is on the canvas currently
     this.displayBufferCtx.clearRect(0, 0, this.width, this.height);
-
-    const localPoints = [ this.mousePoint, ...this.points ];
-
-    // Compute kdTree
-    const tree = new kdTree(localPoints, this.distance, ['x', 'y']);
+    this.displayBufferCtx.lineWidth = 0.4;
 
     // For each point
-    localPoints.forEach((point) => {
-
-      // Find all the nearest points within a given radius -> `O(n log n)`
-      const nearestSet = tree.nearest(point, this.numPoints + 1, this.maxDistance);
-
-      nearestSet.forEach(sibling => {
+    this.renderPoints.forEach((point) => {
+      point.nearestSet.forEach(sibling => {
         this.displayBufferCtx.strokeStyle=`rgba(255, 255, 255, ${(1 - sibling[1] / this.maxDistance).toFixed(1)})`;
         this.displayBufferCtx.beginPath();
         this.displayBufferCtx.moveTo(point.x, point.y);
@@ -105,9 +112,10 @@ class App {
   }
 
   render() {
+    // Process.
     this.update();
 
-    // Then process deltas, and render result onscreen
+    // Render.
     this.draw();
     window.requestAnimationFrame(this.render.bind(this));
   }
