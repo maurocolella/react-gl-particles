@@ -7,27 +7,22 @@ class App {
     this.renderPoints = [];
     this.numPoints = numPoints;
     this.maxDistance = Math.pow(maxDistance, 2);
-    this.width = 1024;
-    this.height = 768;
     this.mousePoint = { x: 0, y: 0 };
 
     let dataLength = numPoints;
 
 
     this.display = document.createElement('canvas');
-    this.display.addEventListener('mousemove', this.handleMousemove.bind(this));
-
     this.displayCtx = this.display.getContext('2d');
-    document.body.appendChild(this.display);
 
     this.displayBuffer = document.createElement('canvas');
     this.displayBufferCtx = this.display.getContext('2d');
 
-    this.display.width = this.width; // * window.devicePixelRatio;
-    this.display.height = this.height; // * window.devicePixelRatio;
+    this.display.addEventListener('mousemove', this.handleMousemove.bind(this));
+    document.body.appendChild(this.display);
 
-    this.displayBuffer.width = this.width; // * window.devicePixelRatio;
-    this.displayBuffer.height = this.height; // * window.devicePixelRatio;
+    window.addEventListener('resize', this.handleResize.bind(this));
+    this.handleResize();
 
 
     // Iterate.
@@ -59,6 +54,17 @@ class App {
       x: event.clientX,
       y: event.clientY,
     };
+  }
+
+  handleResize(event) {
+    this.width = window.innerWidth; // / window.devicePixelRatio;
+    this.height = window.innerHeight; // / window.devicePixelRatio;
+
+    this.display.width = this.width;
+    this.display.height = this.height;
+
+    this.displayBuffer.width = this.width;
+    this.displayBuffer.height = this.height;
   }
 
   update() {
@@ -93,7 +99,7 @@ class App {
 
     // erase what is on the canvas currently
     this.displayBufferCtx.clearRect(0, 0, this.width, this.height);
-    this.displayBufferCtx.lineWidth = 0.4;
+    this.displayBufferCtx.lineWidth = 0.2;
 
     /* motion blur: this.displayBufferCtx.globalAlpha = 0.9;
     this.displayBufferCtx.fillStyle = 'rgba(0,0,0,0.1)';
@@ -125,5 +131,5 @@ class App {
   }
 }
 
-const app = new App(127, 100);
+const app = new App(144, 100);
 app.render();
