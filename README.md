@@ -1,8 +1,12 @@
-# Webpack Frontend Starterkit
+# Distance field animation with KD-Trees
 
 [![Dependabot badge](https://flat.badgen.net/dependabot/wbkd/webpack-starter?icon=dependabot)](https://dependabot.com/)
 
-A lightweight foundation for your next webpack based frontend project.
+Forked from: "a lightweight foundation for your next webpack based frontend project."
+
+Someone on the issue tracker of particles.js mentioned using KD-Trees. Someone mentioned
+using webgl. Both of these made a lot of sense. I took some time to propose a lean
+implementation over the weekend.
 
 
 ### Installation

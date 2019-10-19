@@ -95,6 +95,10 @@ class App {
     this.displayBufferCtx.clearRect(0, 0, this.width, this.height);
     this.displayBufferCtx.lineWidth = 0.4;
 
+    /* motion blur: this.displayBufferCtx.globalAlpha = 0.9;
+    this.displayBufferCtx.fillStyle = 'rgba(0,0,0,0.1)';
+    this.displayBufferCtx.fillRect(0, 0, this.width, this.height); */
+
     // For each point
     this.renderPoints.forEach((point) => {
       point.nearestSet.forEach(sibling => {
