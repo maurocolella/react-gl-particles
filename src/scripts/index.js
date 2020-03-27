@@ -150,7 +150,7 @@ class App {
     // For each point
     this.renderPoints.forEach((point) => {
       point.nearestSet.forEach(sibling => {
-        graphics.lineStyle(0.7, 0xffffff, 1 - sibling[1] * this.invMaxDistance)
+        graphics.lineStyle(0.7, 0xffffff, 0.4 * (1 - sibling[1] * this.invMaxDistance))
         .moveTo(point.x, point.y)
         .lineTo(sibling[0].x, sibling[0].y);
       });
