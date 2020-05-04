@@ -1,4 +1,3 @@
-import { kdTree } from 'kd-tree-javascript';
 import memoize from 'memoizee';
 import * as PIXI from './pixi.js';
 import '../styles/index.scss';
@@ -119,20 +118,17 @@ class App {
 
     const localPoints = [ this.mousePoint, ...this.points ];
 
-    // Compute kdTree
-    const tree = new kdTree(localPoints, this.calculateDistance, ['x', 'y']);
-    nearest = memoize(tree.nearest, {
-      normalizer: function (args) {
-          return [JSON.stringify(args[0]), args[1], args[2]];
-      }
-    });
-
     // Find all the nearest points within a given radius -> `O(n log n)`
-    this.renderPoints = localPoints.map(point => {
+    this.renderPoints = localPoints.map((point, index) => {
+      const otherPoints = this.renderPoints.slice();
+      otherPoints.splice(index,1);
+
       return {
         x: point.x,
         y: point.y,
-        nearestSet: nearest(point, this.numPoints + 1, this.maxDistance),
+        nearestSet: otherPoints
+            .map((sibling) => [sibling, this.calculateDistance(point,sibling)])
+            .filter((sibling) => sibling[1] < this.maxDistance),
       };
     });
   }
@@ -168,5 +164,5 @@ class App {
   }
 }
 
-const app = new App(100, 100);
+const app = new App(200, 100);
 app.run();
