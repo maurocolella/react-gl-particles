@@ -1,11 +1,14 @@
-# Distance field animation with KD-Trees
+# Distance field animation (with/without KD-Trees)
 
 Forked from: "a lightweight foundation for your next webpack based frontend project."
 [https://github.com/wbkd/webpack-starter.git](https://github.com/wbkd/webpack-starter.git)
 
 Someone on the issue tracker of particles.js mentioned using KD-Trees. Someone mentioned
-using webgl. Both of these made a lot of sense. I took some time to propose a lean
-implementation over the weekend.
+using webgl. ~~Both of these made a lot of sense.~~
+
+**EDIT: Nope. Not. All things considered, due to the dynamic nature of the render, it hasn't proved trivial to maintain a kd-tree updated all along.**
+
+I am still providing the code. As an experiment, along with a reference implementation that just renders distances between dots in *O(N^2)*.
 
 
 ### Installation
