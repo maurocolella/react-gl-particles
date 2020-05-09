@@ -1,7 +1,5 @@
 import * as PIXI from './pixi.js';
 
-const canvas = document.createElement('canvas');
-
 class GLParticles {
   /**
    * Constructor.
@@ -14,10 +12,9 @@ class GLParticles {
         antialias: true,
         transparent: background === undefined,
         backgroundColor: background,
-        resizeTo: window,
+        resizeTo: canvas,
         view: canvas,
     });
-    document.body.appendChild(pixi.view);
 
     const container = new PIXI.Container();
     container.interactive = true;
@@ -27,8 +24,6 @@ class GLParticles {
 
     this.graphics = new PIXI.Graphics();
     container.addChild(this.graphics);
-
-    let nearest = null;
 
     this.color = color !== undefined ? color : 0xffffff;
     this.background = background !== undefined ? background : 0x000000;
@@ -88,7 +83,7 @@ class GLParticles {
    *
    * @param {*} event
    */
-  handleMousemove(mouseData) {
+  handleMousemove() {
     this.mousePoint = {
       x: event.clientX,
       y: event.clientY,
@@ -99,7 +94,7 @@ class GLParticles {
    *
    * @param {*} event
    */
-  handleResize(event) {
+  handleResize() {
     this.width = window.innerWidth; // / window.devicePixelRatio;
     this.height = window.innerHeight; // / window.devicePixelRatio;
   }
@@ -165,10 +160,4 @@ class GLParticles {
   }
 }
 
-const app = new GLParticles({
-    canvas,
-    color: 0xff0000,
-    numPoints: 200,
-    maxDistance: 100,
-});
-app.run();
+export default GLParticles;

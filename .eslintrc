@@ -5,9 +5,9 @@
   },
   "parserOptions": {
     "ecmaVersion": 6,
-    "sourceType": "module"
+    "sourceType": "module",
+    "jsx": true
   },
-  "rules": {
-    "semi": 2
-  }
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "parser": "babel-eslint"
 }
