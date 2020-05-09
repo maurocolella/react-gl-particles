@@ -9,11 +9,13 @@ class GLParticles {
   constructor({ canvas, color, background, numPoints, maxDistance }) {
     // PIXI initialization.
     const pixi = new PIXI.Application({
-        antialias: true,
+        // antialias: true,
         transparent: background === undefined,
         backgroundColor: background,
         resizeTo: canvas,
         view: canvas,
+        width: screen.width,
+        height: screen.height,
     });
 
     const container = new PIXI.Container();
@@ -52,8 +54,8 @@ class GLParticles {
           x: Math.random() * window.innerWidth,
           y: Math.random() * window.innerHeight,
           speed: {
-            x: (Math.random() + 0.1) * Math.sign((Math.random() + 0.51) - 1),
-            y: (Math.random() + 0.1) * Math.sign((Math.random() + 0.51) - 1),
+            x: (Math.random() + 0.1) * Math.sign((Math.random() + 0.51) - 1) * 0.5,
+            y: (Math.random() + 0.1) * Math.sign((Math.random() + 0.51) - 1) * 0.5,
           }
         }
       );
@@ -140,7 +142,7 @@ class GLParticles {
     // For each point
     this.renderPoints.forEach((point) => {
       point.nearestSet.forEach(sibling => {
-        this.graphics.lineStyle(0.7, this.color, 0.4 * (1 - sibling[1] * this.invMaxDistance))
+        this.graphics.lineStyle(1, this.color, 0.4 * (1 - sibling[1] * this.invMaxDistance), 0.5, true)
         .moveTo(point.x, point.y)
         .lineTo(sibling[0].x, sibling[0].y);
       });
