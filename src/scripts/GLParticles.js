@@ -1,37 +1,37 @@
-import { kdTree } from 'kd-tree-javascript';
-import memoize from 'memoizee';
 import * as PIXI from './pixi.js';
-import '../styles/index.scss';
 
-// PIXI initialization.
-const pixi = new PIXI.Application({
-  // width: 1024,
-  // height: 768,
-  antialias: true,
-  transparent: true,
-  resizeTo: window,
-});
-document.body.appendChild(pixi.view);
+const canvas = document.createElement('canvas');
 
-const container = new PIXI.Container();
-container.interactive = true;
-container.interactiveChildren = false;
-container.sortDirty = false;
-pixi.stage.addChild(container);
-
-const graphics = new PIXI.Graphics();
-container.addChild(graphics);
-
-let nearest = null;
-
-
-class App {
+class GLParticles {
   /**
    * Constructor.
    * @param {*} numPoints
    * @param {*} maxDistance - maximum distance at which to draw connecting lines.
    */
-  constructor(numPoints, maxDistance) {
+  constructor({ canvas, color, background, numPoints, maxDistance }) {
+    // PIXI initialization.
+    const pixi = new PIXI.Application({
+        antialias: true,
+        transparent: background === undefined,
+        backgroundColor: background,
+        resizeTo: window,
+        view: canvas,
+    });
+    document.body.appendChild(pixi.view);
+
+    const container = new PIXI.Container();
+    container.interactive = true;
+    container.interactiveChildren = false;
+    container.sortDirty = false;
+    pixi.stage.addChild(container);
+
+    this.graphics = new PIXI.Graphics();
+    container.addChild(this.graphics);
+
+    let nearest = null;
+
+    this.color = color !== undefined ? color : 0xffffff;
+    this.background = background !== undefined ? background : 0x000000;
     this.points = [];
     this.renderPoints = [];
     this.numPoints = numPoints;
@@ -119,20 +119,17 @@ class App {
 
     const localPoints = [ this.mousePoint, ...this.points ];
 
-    // Compute kdTree
-    const tree = new kdTree(localPoints, this.calculateDistance, ['x', 'y']);
-    nearest = memoize(tree.nearest, {
-      normalizer: function (args) {
-          return [JSON.stringify(args[0]), args[1], args[2]];
-      }
-    });
-
     // Find all the nearest points within a given radius -> `O(n log n)`
-    this.renderPoints = localPoints.map(point => {
+    this.renderPoints = localPoints.map((point, index) => {
+      const otherPoints = this.renderPoints.slice();
+      otherPoints.splice(index,1);
+
       return {
         x: point.x,
         y: point.y,
-        nearestSet: nearest(point, this.numPoints + 1, this.maxDistance),
+        nearestSet: otherPoints
+            .map((sibling) => [sibling, this.calculateDistance(point,sibling)])
+            .filter((sibling) => sibling[1] < this.maxDistance),
       };
     });
   }
@@ -143,12 +140,12 @@ class App {
   draw() {
     // Render result
     // erase what is on the canvas currently
-    graphics.clear();
+    this.graphics.clear();
 
     // For each point
     this.renderPoints.forEach((point) => {
       point.nearestSet.forEach(sibling => {
-        graphics.lineStyle(0.7, 0xffffff, 0.4 * (1 - sibling[1] * this.invMaxDistance))
+        this.graphics.lineStyle(0.7, this.color, 0.4 * (1 - sibling[1] * this.invMaxDistance))
         .moveTo(point.x, point.y)
         .lineTo(sibling[0].x, sibling[0].y);
       });
@@ -168,5 +165,10 @@ class App {
   }
 }
 
-const app = new App(100, 100);
+const app = new GLParticles({
+    canvas,
+    color: 0xff0000,
+    numPoints: 200,
+    maxDistance: 100,
+});
 app.run();
