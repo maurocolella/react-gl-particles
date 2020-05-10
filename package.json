@@ -1,14 +1,17 @@
 {
-  "name": "kd-tree-dist",
+  "name": "react-gl-particles",
   "version": "1.0.0",
-  "description": "A kd-tree-based distance field.",
+  "description": "Distance field/particle graph for React with WebGL.",
+  "main": "dist/Particles.jsx",
   "scripts": {
-    "build": "NODE_ENV=production webpack --config webpack/webpack.config.prod.js  --colors",
-    "start": "webpack-dev-server --open --config webpack/webpack.config.dev.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --open --config webpack/webpack.config.dev.js",
+    "transpile": "babel src -d dist --copy-files",
+    "prepublishOnly": "npm run transpile"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wbkd/webpack-starter.git"
+    "url": "git+https://github.com/maurocolella/react-gl-particles"
   },
   "keywords": [
     "webpack",
@@ -21,9 +24,14 @@
   "author": "Mauro Colella",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wbkd/webpack-starter/issues"
+    "url": "https://github.com/maurocolella/react-gl-particles/issues"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.6",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
@@ -59,9 +67,6 @@
     "@pixi/ticker": "^5.2.4",
     "@pixi/utils": "^5.2.4",
     "core-js": "^3.6.5",
-    "kd-tree-javascript": "^1.0.3",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
     "save": "^2.4.0"
   }
 }

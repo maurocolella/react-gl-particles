@@ -1,0 +1,8 @@
+# .npmignore
+src
+examples
+.babelrc
+.browserslistrc
+.eslintrc
+.gitignore
+webpack
