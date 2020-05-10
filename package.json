@@ -1,8 +1,8 @@
 {
   "name": "react-gl-particles",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Distance field/particle graph for React with WebGL.",
-  "main": "dist/Particles.jsx",
+  "main": "dist/Particles.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --config webpack/webpack.config.dev.js",
@@ -67,6 +67,9 @@
     "@pixi/ticker": "^5.2.4",
     "@pixi/utils": "^5.2.4",
     "core-js": "^3.6.5",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "save": "^2.4.0"
   }
 }
